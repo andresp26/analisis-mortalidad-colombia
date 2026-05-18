@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import gc
 import os
 import unicodedata
 import warnings
@@ -310,10 +311,27 @@ def load_and_prepare_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     mortality["cause_code"] = mortality["cause_code"].fillna("SIN CODIGO")
     mortality["sex"] = mortality["sex"].fillna("Sin dato")
 
+    # --- Reduce memory: keep only columns used by the dashboard ---
+    keep_cols = [
+        "department", "department_norm", "dept_code", "municipality",
+        "month", "sex", "age_group_code", "age_category",
+        "cause_code", "cause_name",
+    ]
+    keep_cols = [c for c in keep_cols if c in mortality.columns]
+    mortality = mortality[keep_cols].copy()
+
+    # Convert string columns to category to save RAM
+    for col in ["department", "municipality", "sex", "age_category", "cause_code", "cause_name"]:
+        if col in mortality.columns:
+            mortality[col] = mortality[col].astype("category")
+
     return mortality, causes, divipola
 
 
 MORTALITY_DF, CAUSES_DF, DIVIPOLA_DF = load_and_prepare_data()
+# Free memory from auxiliary dataframes not needed at runtime
+del CAUSES_DF, DIVIPOLA_DF
+gc.collect()
 
 AVAILABLE_DEPARTMENTS = sorted(
     [department for department in MORTALITY_DF.get("department", pd.Series(dtype=str)).dropna().unique().tolist()]
