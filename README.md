@@ -11,7 +11,7 @@ Analizar distribuciones de mortalidad por departamento, mes, ciudad, sexo, causa
 - Jherson Guzman Ramirez
 
 ## Enlaces de entrega
-- URL de la aplicacion desplegada: [PENDIENTE]
+- URL de la aplicacion desplegada: https://analisis-mortalidad-colombia.onrender.com/
 - URL del repositorio en GitHub: https://github.com/andresp26/analisis-mortalidad-colombia
 
 ## Estructura del proyecto
