@@ -15,9 +15,14 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-MORTALITY_FILE = DATA_DIR / "NoFetal2019.xlsx"
-CAUSES_FILE = DATA_DIR / "CodigosDeMuerte.xlsx"
-DIVIPOLA_FILE = DATA_DIR / "Divipola.xlsx"
+MORTALITY_FILE = DATA_DIR / "NoFetal2019.parquet"
+CAUSES_FILE = DATA_DIR / "CodigosDeMuerte.parquet"
+DIVIPOLA_FILE = DATA_DIR / "Divipola.parquet"
+
+# Fallback a Excel si no existen los Parquet
+MORTALITY_FILE_XLSX = DATA_DIR / "NoFetal2019.xlsx"
+CAUSES_FILE_XLSX = DATA_DIR / "CodigosDeMuerte.xlsx"
+DIVIPOLA_FILE_XLSX = DATA_DIR / "Divipola.xlsx"
 
 AGE_CATEGORY_MAP = {
     0: "Mortalidad neonatal",
@@ -138,9 +143,17 @@ def find_column(dataframe: pd.DataFrame, candidates: list[str]) -> str | None:
 
 
 def safe_read_excel(path: Path, skiprows: int = 0) -> pd.DataFrame:
-    if not path.exists():
-        return pd.DataFrame()
-    return pd.read_excel(path, skiprows=skiprows)
+    """Read a Parquet file if it exists, otherwise fall back to Excel."""
+    if path.exists() and path.suffix == ".parquet":
+        return pd.read_parquet(path)
+    # Fallback: try the xlsx version
+    xlsx_path = path.with_suffix(".xlsx")
+    if xlsx_path.exists():
+        return pd.read_excel(xlsx_path, skiprows=skiprows)
+    # Try the original path as-is (for backwards compat)
+    if path.exists():
+        return pd.read_excel(path, skiprows=skiprows)
+    return pd.DataFrame()
 
 
 def clean_string_series(series: pd.Series) -> pd.Series:
@@ -173,7 +186,7 @@ def assign_age_category(value: object) -> str:
 
 def load_and_prepare_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     mortality = safe_read_excel(MORTALITY_FILE)
-    # CodigosDeMuerte has 8 metadata rows before the real header
+    # CodigosDeMuerte: skiprows=8 solo aplica al Excel (el Parquet ya fue convertido sin esas filas)
     causes = safe_read_excel(CAUSES_FILE, skiprows=8)
     divipola = safe_read_excel(DIVIPOLA_FILE)
 
@@ -373,12 +386,12 @@ def _kpi_card(label: str, value: str, icon_class: str) -> html.Div:
 def build_data_status_banner() -> html.Div | None:
     """Show a warning banner if any data file is missing."""
     missing = []
-    if not MORTALITY_FILE.exists():
-        missing.append("NoFetal2019.xlsx")
-    if not CAUSES_FILE.exists():
-        missing.append("CodigosDeMuerte.xlsx")
-    if not DIVIPOLA_FILE.exists():
-        missing.append("Divipola.xlsx")
+    if not MORTALITY_FILE.exists() and not MORTALITY_FILE_XLSX.exists():
+        missing.append("NoFetal2019")
+    if not CAUSES_FILE.exists() and not CAUSES_FILE_XLSX.exists():
+        missing.append("CodigosDeMuerte")
+    if not DIVIPOLA_FILE.exists() and not DIVIPOLA_FILE_XLSX.exists():
+        missing.append("Divipola")
     if not missing:
         return None
     return html.Div(
