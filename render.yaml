@@ -3,7 +3,7 @@ services:
     name: mortalidad-colombia-2019
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:server
+    startCommand: gunicorn app:server -c gunicorn.conf.py
     plan: free
     envVars:
       - key: PORT
