@@ -6,6 +6,14 @@ Aplicacion web dinamica en Python para explorar la mortalidad en Colombia durant
 ## Objetivo
 Analizar distribuciones de mortalidad por departamento, mes, ciudad, sexo, causa y grupo de edad a partir de los archivos del DANE.
 
+## Integrantes del grupo
+- Plinio Andres Hernandez
+- Jherson Guzman Ramirez
+
+## Enlaces de entrega
+- URL de la aplicacion desplegada: [PENDIENTE]
+- URL del repositorio en GitHub: https://github.com/andresp26/analisis-mortalidad-colombia
+
 ## Estructura del proyecto
 - `app.py`: aplicacion principal de Dash.
 - `requirements.txt`: dependencias del proyecto.
@@ -38,6 +46,12 @@ Analizar distribuciones de mortalidad por departamento, mes, ciudad, sexo, causa
 4. Define las variables o configuraciones necesarias si Railway lo solicita.
 5. Publica la aplicacion y copia la URL generada.
 
+## Despliegue en Render (opcional)
+1. Conecta el repositorio en Render.
+2. Configura el servicio web con el comando `gunicorn app:server`.
+3. Agrega la variable `PORT` si Render la solicita automaticamente.
+4. Despliega y copia la URL publica.
+
 ## Software
 - Python
 - Dash
@@ -46,4 +60,26 @@ Analizar distribuciones de mortalidad por departamento, mes, ciudad, sexo, causa
 - Gunicorn
 
 ## Visualizaciones y hallazgos
-Esta seccion se completara cuando se carguen los datos reales y se generen las capturas finales de la aplicacion.
+Incluye capturas de pantalla y una breve interpretacion por grafico.
+
+1. Mapa de muertes por departamento
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del mapa.
+2. Serie mensual de muertes
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del grafico de lineas.
+3. Top 5 ciudades mas violentas (homicidios X95)
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del grafico de barras.
+4. 10 ciudades con menor indice de mortalidad
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del grafico circular.
+5. Top 10 causas de muerte
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura de la tabla.
+6. Muertes por sexo y departamento (barras apiladas)
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del grafico de barras apiladas.
+7. Distribucion por grupo de edad
+   - Hallazgo principal: [PENDIENTE]
+   - Evidencia: captura del histograma.
